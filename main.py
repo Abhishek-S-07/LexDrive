@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from langchain_anthropic import ChatAnthropic
 from langchain_chroma import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
@@ -29,11 +29,21 @@ app.add_middleware(
 )
 
 # Setup API Keys (Ensure these are set in your environment variables)
-# os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-key-here"
+anthropic_api_key = os.environ.get("ANTHROPIC_API_KEY")
+if not anthropic_api_key:
+    raise RuntimeError(
+        "ANTHROPIC_API_KEY is required. Set it in your environment before starting the server."
+    )
+
+hf_token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACEHUB_API_TOKEN")
+if not hf_token:
+    print(
+        "Warning: HF_TOKEN is not set. Hugging Face downloads may be slower and have lower rate limits."
+    )
 
 # 1. Initialize the Embedding Model
 # Using sentence-transformers (all-MiniLM-L6-v2) as per the spec
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
 # 2. Connect to your existing ChromaDB Vector Store
 # Ensure 'db_directory' points to where your ChromaDB is saved
