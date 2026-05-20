@@ -6,8 +6,8 @@ from pydantic import BaseModel
 from langchain_anthropic import ChatAnthropic
 from langchain_chroma import Chroma
 from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_classic.chains import create_retrieval_chain
+from langchain_classic.chains.combine_documents.stuff import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 
 # Initialize FastAPI app
@@ -55,7 +55,8 @@ retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 # Using the model version specified in the execution plan
 llm = ChatAnthropic(
     model_name="claude-sonnet-4-20250514",
-    temperature=0.2, # Low temperature for factual legal accuracy
+    api_key=anthropic_api_key,
+    temperature=0.2,  # Low temperature for factual legal accuracy
     max_tokens_to_sample=512
 )
 
