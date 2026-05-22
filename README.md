@@ -22,6 +22,17 @@ python main.py
 
 The backend will start on `http://0.0.0.0:8000`.
 
+## Build state law databases
+
+If you have state law PDF files in the project root, run:
+
+```powershell
+.\.venv\Scripts\activate
+python build_state_law_db.py
+```
+
+This creates per-state JSON files in `state_law_databases/` and a combined file `law_database_all_states.json`.
+
 ## Notes
 
 - `main.py` now uses the installed `langchain_classic` chain imports.
